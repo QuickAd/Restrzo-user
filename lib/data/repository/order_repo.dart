@@ -1,82 +1,62 @@
-import 'dart:convert';
-
-import 'package:efood_multivendor_driver/data/api/api_client.dart';
-import 'package:efood_multivendor_driver/data/model/body/record_location_body.dart';
-import 'package:efood_multivendor_driver/data/model/body/update_status_body.dart';
-import 'package:efood_multivendor_driver/data/model/response/ignore_model.dart';
-import 'package:efood_multivendor_driver/util/app_constants.dart';
+import 'package:efood_multivendor/data/api/api_client.dart';
+import 'package:efood_multivendor/data/model/body/place_order_body.dart';
+import 'package:efood_multivendor/util/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
-import 'package:get/state_manager.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class OrderRepo extends GetxService {
+class OrderRepo {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
   OrderRepo({@required this.apiClient, @required this.sharedPreferences});
 
-  Future<Response> getAllOrders() {
-    return apiClient.getData(AppConstants.ALL_ORDERS_URI + getUserToken());
+  Future<Response> getRunningOrderList(int offset) async {
+    return await apiClient.getData('${AppConstants.RUNNING_ORDER_LIST_URI}?offset=$offset&limit=10');
   }
 
-  Future<Response> getCompletedOrderList(int offset) async {
-    return await apiClient.getData('${AppConstants.ALL_ORDERS_URI}?token=${getUserToken()}&offset=$offset&limit=10');
+  Future<Response> getHistoryOrderList(int offset) async {
+    return await apiClient.getData('${AppConstants.HISTORY_ORDER_LIST_URI}?offset=$offset&limit=10');
   }
 
-  Future<Response> getCurrentOrders() {
-    return apiClient.getData(AppConstants.CURRENT_ORDERS_URI + getUserToken());
+  Future<Response> getOrderDetails(String orderID) async {
+    return await apiClient.getData('${AppConstants.ORDER_DETAILS_URI}$orderID');
   }
 
-  Future<Response> getLatestOrders() {
-    return apiClient.getData(AppConstants.LATEST_ORDERS_URI + getUserToken());
+  Future<Response> cancelOrder(String orderID) async {
+    return await apiClient.postData(AppConstants.ORDER_CANCEL_URI, {'_method': 'put', 'order_id': orderID});
   }
 
-  Future<Response> recordLocation(RecordLocationBody recordLocationBody) {
-    recordLocationBody.token = getUserToken();
-    return apiClient.postData(AppConstants.RECORD_LOCATION_URI, recordLocationBody.toJson());
+  Future<Response> trackOrder(String orderID) async {
+    return await apiClient.getData('${AppConstants.TRACK_URI}$orderID');
   }
 
-  Future<Response> updateOrderStatus(UpdateStatusBody updateStatusBody) {
-    updateStatusBody.token = getUserToken();
-    return apiClient.postData(AppConstants.UPDATE_ORDER_STATUS_URI, updateStatusBody.toJson());
+  Future<Response> placeOrder(PlaceOrderBody orderBody) async {
+    return await apiClient.postData(AppConstants.PLACE_ORDER_URI, orderBody.toJson());
   }
 
-  Future<Response> updatePaymentStatus(UpdateStatusBody updateStatusBody) {
-    updateStatusBody.token = getUserToken();
-    return apiClient.postData(AppConstants.UPDATE_PAYMENT_STATUS_URI, updateStatusBody.toJson());
+  Future<Response> getDeliveryManData(String orderID) async {
+    return await apiClient.getData('${AppConstants.LAST_LOCATION_URI}$orderID');
   }
 
-  Future<Response> getOrderDetails(int orderID) {
-    return apiClient.getData('${AppConstants.ORDER_DETAILS_URI}${getUserToken()}&order_id=$orderID');
+  Future<Response> switchToCOD(String orderID) async {
+    return await apiClient.postData(AppConstants.COD_SWITCH_URL, {'_method': 'put', 'order_id': orderID});
   }
 
-  Future<Response> acceptOrder(int orderID) {
-    return apiClient.postData(AppConstants.ACCEPT_ORDER_URI, {"_method": "put", 'token': getUserToken(), 'order_id': orderID});
+  Future<Response> getDistanceInMeter(LatLng originLatLng, LatLng destinationLatLng) async {
+    return await apiClient.getData('${AppConstants.DISTANCE_MATRIX_URI}'
+        '?origin_lat=${originLatLng.latitude}&origin_lng=${originLatLng.longitude}'
+        '&destination_lat=${destinationLatLng.latitude}&destination_lng=${destinationLatLng.longitude}');
   }
 
-  String getUserToken() {
-    return sharedPreferences.getString(AppConstants.TOKEN) ?? "";
+  Future<Response> getRefundReasons() async {
+    return await apiClient.getData('${AppConstants.REFUND_REASONS_URI}');
   }
 
-  void setIgnoreList(List<IgnoreModel> ignoreList) {
-    List<String> _stringList = [];
-    ignoreList.forEach((ignore) {
-      _stringList.add(jsonEncode(ignore.toJson()));
-    });
-    sharedPreferences.setStringList(AppConstants.IGNORE_LIST, _stringList);
-  }
-
-  List<IgnoreModel> getIgnoreList() {
-    List<IgnoreModel> _ignoreList = [];
-    List<String> _stringList = sharedPreferences.getStringList(AppConstants.IGNORE_LIST) ?? [];
-    _stringList.forEach((ignore) {
-      _ignoreList.add(IgnoreModel.fromJson(jsonDecode(ignore)));
-    });
-    return _ignoreList;
-  }
-
-  Future<Response> getOrderWithId(int orderId) {
-    return apiClient.getData('${AppConstants.CURRENT_ORDER_URI}${getUserToken()}&order_id=$orderId');
+  Future<Response> submitRefundRequest(Map<String, String> body, XFile data) async {
+    return apiClient.postMultipartData(AppConstants.REFUND_REQUEST_URI, body,  [MultipartBody('image[]', data)]);
   }
 
 }

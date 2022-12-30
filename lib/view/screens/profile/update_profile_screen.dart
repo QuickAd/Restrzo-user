@@ -1,15 +1,20 @@
 import 'dart:io';
 
-import 'package:efood_multivendor_driver/controller/auth_controller.dart';
-import 'package:efood_multivendor_driver/controller/splash_controller.dart';
-import 'package:efood_multivendor_driver/data/model/response/profile_model.dart';
-import 'package:efood_multivendor_driver/util/dimensions.dart';
-import 'package:efood_multivendor_driver/util/images.dart';
-import 'package:efood_multivendor_driver/util/styles.dart';
-import 'package:efood_multivendor_driver/view/base/custom_button.dart';
-import 'package:efood_multivendor_driver/view/base/custom_snackbar.dart';
-import 'package:efood_multivendor_driver/view/base/my_text_field.dart';
-import 'package:efood_multivendor_driver/view/screens/profile/widget/profile_bg_widget.dart';
+import 'package:efood_multivendor/controller/auth_controller.dart';
+import 'package:efood_multivendor/controller/splash_controller.dart';
+import 'package:efood_multivendor/controller/user_controller.dart';
+import 'package:efood_multivendor/data/model/response/response_model.dart';
+import 'package:efood_multivendor/data/model/response/userinfo_model.dart';
+import 'package:efood_multivendor/helper/responsive_helper.dart';
+import 'package:efood_multivendor/util/dimensions.dart';
+import 'package:efood_multivendor/util/styles.dart';
+import 'package:efood_multivendor/view/base/custom_button.dart';
+import 'package:efood_multivendor/view/base/custom_image.dart';
+import 'package:efood_multivendor/view/base/custom_snackbar.dart';
+import 'package:efood_multivendor/view/base/my_text_field.dart';
+import 'package:efood_multivendor/view/base/not_logged_in_screen.dart';
+import 'package:efood_multivendor/view/base/web_menu_bar.dart';
+import 'package:efood_multivendor/view/screens/profile/widget/profile_bg_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,47 +32,47 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  bool _isLoggedIn;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    if(Get.find<AuthController>().profileModel == null) {
-      Get.find<AuthController>().getProfile();
+    _isLoggedIn = Get.find<AuthController>().isLoggedIn();
+    if(_isLoggedIn && Get.find<UserController>().userInfoModel == null) {
+      Get.find<UserController>().getUserInfo();
     }
-    Get.find<AuthController>().initData();
+    Get.find<UserController>().initData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
-      body: GetBuilder<AuthController>(builder: (authController) {
-        if(authController.profileModel != null && _firstNameController.text.isEmpty) {
-          _firstNameController.text = authController.profileModel.fName ?? '';
-          _lastNameController.text = authController.profileModel.lName ?? '';
-          _phoneController.text = authController.profileModel.phone ?? '';
-          _emailController.text = authController.profileModel.email ?? '';
+      appBar: ResponsiveHelper.isDesktop(context) ? WebMenuBar() : null,
+      body: GetBuilder<UserController>(builder: (userController) {
+        if(userController.userInfoModel != null && _phoneController.text.isEmpty) {
+          _firstNameController.text = userController.userInfoModel.fName ?? '';
+          _lastNameController.text = userController.userInfoModel.lName ?? '';
+          _phoneController.text = userController.userInfoModel.phone ?? '';
+          _emailController.text = userController.userInfoModel.email ?? '';
         }
 
-        return authController.profileModel != null ? ProfileBgWidget(
+        return _isLoggedIn ? userController.userInfoModel != null ? ProfileBgWidget(
           backButton: true,
           circularImage: Center(child: Stack(children: [
-            ClipOval(child: authController.pickedFile != null ? GetPlatform.isWeb ? Image.network(
-              authController.pickedFile.path, width: 100, height: 100, fit: BoxFit.cover,
+            ClipOval(child: userController.pickedFile != null ? GetPlatform.isWeb ? Image.network(
+              userController.pickedFile.path, width: 100, height: 100, fit: BoxFit.cover,
             ) : Image.file(
-              File(authController.pickedFile.path), width: 100, height: 100, fit: BoxFit.cover,
-            ) : FadeInImage.assetNetwork(
-              placeholder: Images.placeholder,
-              image: '${Get.find<SplashController>().configModel.baseUrls.deliveryManImageUrl}/${authController.profileModel.image}',
+              File(userController.pickedFile.path), width: 100, height: 100, fit: BoxFit.cover,
+            ) : CustomImage(
+              image: '${Get.find<SplashController>().configModel.baseUrls.customerImageUrl}/${userController.userInfoModel.image}',
               height: 100, width: 100, fit: BoxFit.cover,
-              imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder, height: 100, width: 100, fit: BoxFit.cover),
             )),
             Positioned(
               bottom: 0, right: 0, top: 0, left: 0,
               child: InkWell(
-                onTap: () => authController.pickImage(),
+                onTap: () => userController.pickImage(),
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.3), shape: BoxShape.circle,
@@ -90,11 +95,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             Expanded(child: Scrollbar(child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-              child: Center(child: SizedBox(width: 1170, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              child: Center(child: SizedBox(width: Dimensions.WEB_MAX_WIDTH, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
                 Text(
                   'first_name'.tr,
-                  style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Theme.of(context).disabledColor),
+                  style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
                 ),
                 SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                 MyTextField(
@@ -109,7 +114,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                 Text(
                   'last_name'.tr,
-                  style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Theme.of(context).disabledColor),
+                  style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
                 ),
                 SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                 MyTextField(
@@ -124,7 +129,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                 Text(
                   'email'.tr,
-                  style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Theme.of(context).disabledColor),
+                  style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
                 ),
                 SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                 MyTextField(
@@ -139,11 +144,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 Row(children: [
                   Text(
                     'phone'.tr,
-                    style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Theme.of(context).disabledColor),
+                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
                   ),
                   SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                   Text('(${'non_changeable'.tr})', style: robotoRegular.copyWith(
-                    fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL, color: Theme.of(context).errorColor,
+                    fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).errorColor,
                   )),
                 ]),
                 SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
@@ -158,26 +163,26 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               ]))),
             ))),
 
-            !authController.isLoading ? CustomButton(
-              onPressed: () => _updateProfile(authController),
+            !userController.isLoading ? CustomButton(
+              onPressed: () => _updateProfile(userController),
               margin: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
               buttonText: 'update'.tr,
             ) : Center(child: CircularProgressIndicator()),
 
           ]),
-        ) : Center(child: CircularProgressIndicator());
+        ) : Center(child: CircularProgressIndicator()) : NotLoggedInScreen();
       }),
     );
   }
 
-  void _updateProfile(AuthController authController) async {
+  void _updateProfile(UserController userController) async {
     String _firstName = _firstNameController.text.trim();
     String _lastName = _lastNameController.text.trim();
     String _email = _emailController.text.trim();
     String _phoneNumber = _phoneController.text.trim();
-    if (authController.profileModel.fName == _firstName &&
-        authController.profileModel.lName == _lastName && authController.profileModel.phone == _phoneNumber &&
-        authController.profileModel.email == _emailController.text && authController.pickedFile == null) {
+    if (userController.userInfoModel.fName == _firstName &&
+        userController.userInfoModel.lName == _lastName && userController.userInfoModel.phone == _phoneNumber &&
+        userController.userInfoModel.email == _emailController.text && userController.pickedFile == null) {
       showCustomSnackBar('change_something_to_update'.tr);
     }else if (_firstName.isEmpty) {
       showCustomSnackBar('enter_your_first_name'.tr);
@@ -192,10 +197,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }else if (_phoneNumber.length < 6) {
       showCustomSnackBar('enter_a_valid_phone_number'.tr);
     } else {
-      ProfileModel _updatedUser = ProfileModel(fName: _firstName, lName: _lastName, email: _email, phone: _phoneNumber);
-      bool _isSuccess = await authController.updateUserInfo(_updatedUser, Get.find<AuthController>().getUserToken());
-      if(_isSuccess) {
-        authController.getProfile();
+      UserInfoModel _updatedUser = UserInfoModel(fName: _firstName, lName: _lastName, email: _email, phone: _phoneNumber);
+      ResponseModel _responseModel = await userController.updateUserInfo(_updatedUser, Get.find<AuthController>().getUserToken());
+      if(_responseModel.isSuccess) {
+        showCustomSnackBar('profile_updated_successfully'.tr, isError: false);
+      }else {
+        showCustomSnackBar(_responseModel.message);
       }
     }
   }

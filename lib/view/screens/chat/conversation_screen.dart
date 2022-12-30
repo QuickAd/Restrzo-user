@@ -1,20 +1,25 @@
-import 'package:efood_multivendor_driver/controller/chat_controller.dart';
-import 'package:efood_multivendor_driver/controller/splash_controller.dart';
-import 'package:efood_multivendor_driver/data/model/body/notification_body.dart';
-import 'package:efood_multivendor_driver/data/model/response/conversation_model.dart';
-import 'package:efood_multivendor_driver/helper/date_converter.dart';
-import 'package:efood_multivendor_driver/helper/route_helper.dart';
-import 'package:efood_multivendor_driver/helper/user_type.dart';
-import 'package:efood_multivendor_driver/util/dimensions.dart';
-import 'package:efood_multivendor_driver/util/styles.dart';
-import 'package:efood_multivendor_driver/view/base/custom_app_bar.dart';
-import 'package:efood_multivendor_driver/view/base/custom_image.dart';
-import 'package:efood_multivendor_driver/view/base/custom_ink_well.dart';
-import 'package:efood_multivendor_driver/view/base/custom_snackbar.dart';
-import 'package:efood_multivendor_driver/view/base/paginated_list_view.dart';
-import 'package:efood_multivendor_driver/view/screens/chat/widget/search_field.dart';
+import 'package:efood_multivendor/controller/auth_controller.dart';
+import 'package:efood_multivendor/controller/chat_controller.dart';
+import 'package:efood_multivendor/controller/splash_controller.dart';
+import 'package:efood_multivendor/controller/user_controller.dart';
+import 'package:efood_multivendor/data/model/body/notification_body.dart';
+import 'package:efood_multivendor/data/model/response/conversation_model.dart';
+import 'package:efood_multivendor/helper/date_converter.dart';
+import 'package:efood_multivendor/helper/route_helper.dart';
+import 'package:efood_multivendor/helper/user_type.dart';
+import 'package:efood_multivendor/util/app_constants.dart';
+import 'package:efood_multivendor/util/dimensions.dart';
+import 'package:efood_multivendor/util/styles.dart';
+import 'package:efood_multivendor/view/base/custom_app_bar.dart';
+import 'package:efood_multivendor/view/base/custom_image.dart';
+import 'package:efood_multivendor/view/base/custom_ink_well.dart';
+import 'package:efood_multivendor/view/base/custom_snackbar.dart';
+import 'package:efood_multivendor/view/base/not_logged_in_screen.dart';
+import 'package:efood_multivendor/view/base/paginated_list_view.dart';
+import 'package:efood_multivendor/view/screens/search/widget/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen({Key key}) : super(key: key);
 
@@ -30,28 +35,38 @@ class _ConversationScreenState extends State<ConversationScreen> {
   void initState() {
     super.initState();
 
-    Get.find<ChatController>().getConversationList(1);
-
+    if(Get.find<AuthController>().isLoggedIn()) {
+      Get.find<UserController>().getUserInfo();
+      Get.find<ChatController>().getConversationList(1);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'conversation_list'.tr),
-      body: GetBuilder<ChatController>(builder: (chatController) {
+    return GetBuilder<ChatController>(builder: (chatController) {
+      ConversationsModel _conversation;
+      if(chatController.searchConversationModel != null) {
+        _conversation = chatController.searchConversationModel;
+      }else {
+        _conversation = chatController.conversationModel;
+      }
 
-        ConversationsModel _conversation;
-        if(chatController.searchConversationModel != null) {
-          _conversation = chatController.searchConversationModel;
-        }else {
-          _conversation = chatController.conversationModel;
-        }
-
-        return Padding(
+      return Scaffold(
+        appBar: CustomAppBar(title: 'conversation_list'.tr),
+        floatingActionButton: (chatController.conversationModel != null && !chatController.hasAdmin) ? FloatingActionButton.extended(
+          label: Text('${'chat_with'.tr} ${AppConstants.APP_NAME}', style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Colors.white)),
+          icon: Icon(Icons.chat, color: Colors.white),
+          backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () => Get.toNamed(RouteHelper.getChatRoute(notificationBody: NotificationBody(
+            notificationType: NotificationType.message, adminId: 0,
+          ))),
+        ) : null,
+        body: Padding(
           padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
           child: Column(children: [
 
-            (_conversation != null && _conversation.conversations != null) ? SearchField(
+            (Get.find<AuthController>().isLoggedIn() && _conversation != null && _conversation.conversations != null
+            && chatController.conversationModel.conversations.isNotEmpty) ? Center(child: SizedBox(width: Dimensions.WEB_MAX_WIDTH, child: SearchField(
               controller: _searchController,
               hint: 'search'.tr,
               suffixIcon: chatController.searchConversationModel != null ? Icons.close : Icons.search,
@@ -59,7 +74,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 if(_searchController.text.trim().isNotEmpty) {
                   chatController.searchConversation(_searchController.text.trim());
                 }else {
-                  showCustomSnackBar('write_somethings'.tr);
+                  showCustomSnackBar('write_something'.tr);
                 }
               },
               iconPressed: () {
@@ -70,133 +85,142 @@ class _ConversationScreenState extends State<ConversationScreen> {
                   if(_searchController.text.trim().isNotEmpty) {
                     chatController.searchConversation(_searchController.text.trim());
                   }else {
-                    showCustomSnackBar('write_somethings'.tr);
+                    showCustomSnackBar('write_something'.tr);
                   }
                 }
               },
-            ) : SizedBox(),
-
-            SizedBox(height: (_conversation != null && _conversation.conversations != null
+            ))) : SizedBox(),
+            SizedBox(height: (Get.find<AuthController>().isLoggedIn() && _conversation != null && _conversation.conversations != null
                 && chatController.conversationModel.conversations.isNotEmpty) ? Dimensions.PADDING_SIZE_SMALL : 0),
 
-            Expanded(
-              child: (_conversation != null && _conversation.conversations != null)
-                  ? _conversation.conversations.length > 0 ? RefreshIndicator(
-                    onRefresh: () async {
-                      chatController.getConversationList(1);
+            Expanded(child: Get.find<AuthController>().isLoggedIn() ? (_conversation != null && _conversation.conversations != null)
+            ? _conversation.conversations.length > 0 ? RefreshIndicator(
+              onRefresh: () async {
+                await Get.find<ChatController>().getConversationList(1);
+              },
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: EdgeInsets.zero,
+                child: Center(child: SizedBox(width: Dimensions.WEB_MAX_WIDTH, child: PaginatedListView(
+                  scrollController: _scrollController,
+                  onPaginate: (int offset) => chatController.getConversationList(offset),
+                  totalSize: _conversation.totalSize,
+                  offset: _conversation.offset,
+                  enabledPagination: chatController.searchConversationModel == null,
+                  productView: ListView.builder(
+                    itemCount: _conversation.conversations.length,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context, index) {
+                      User _user;
+                      String _type;
+                      if(_conversation.conversations[index].senderType == UserType.user.name
+                          || _conversation.conversations[index].senderType == UserType.customer.name) {
+                        _user = _conversation.conversations[index].receiver;
+                        _type = _conversation.conversations[index].receiverType;
+                      }else {
+                        _user = _conversation.conversations[index].sender;
+                        _type = _conversation.conversations[index].senderType;
+                      }
+
+                      String _baseUrl = '';
+                      if(_type == UserType.vendor.name) {
+                        _baseUrl = Get.find<SplashController>().configModel.baseUrls.restaurantImageUrl;
+                      }else if(_type == UserType.delivery_man.name) {
+                        _baseUrl = Get.find<SplashController>().configModel.baseUrls.deliveryManImageUrl;
+                      }else if(_type == UserType.admin.name){
+                        _baseUrl = Get.find<SplashController>().configModel.baseUrls.businessLogoUrl;
+                      }
+
+                      return Container(
+                        margin: EdgeInsets.only(bottom: Dimensions.PADDING_SIZE_SMALL),
+
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+                          boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 1, blurRadius: 5)],
+                        ),
+                        child: CustomInkWell(
+                          onTap: () {
+                            if(_user != null) {
+                              Get.toNamed(RouteHelper.getChatRoute(
+                                notificationBody: NotificationBody(
+                                  type: _conversation.conversations[index].senderType,
+                                  notificationType: NotificationType.message,
+                                  adminId: _type == UserType.admin.name ? 0 : null,
+                                  restaurantId: _type == UserType.vendor.name ? _user.id : null,
+                                  deliverymanId: _type == UserType.delivery_man.name ? _user.id : null,
+                                ),
+                                conversationID: _conversation.conversations[index].id,
+                                index: index,
+                              ));
+                            }else {
+                              showCustomSnackBar('${_type.tr} ${'not_found'.tr}');
+                            }
+                          },
+                          highlightColor: Theme.of(context).backgroundColor.withOpacity(0.1),
+                          radius: Dimensions.RADIUS_SMALL,
+                          child: Stack(children: [
+                            Padding(
+                              padding: const EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+                              child: Row(children: [
+                                ClipOval(child: CustomImage(
+                                  height: 50, width: 50,
+                                  image: '$_baseUrl/${_user != null ? _user.image : ''}'?? '',
+                                )),
+                                SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+
+                                Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+
+                                  _user != null ? Text(
+                                    '${_user.fName} ${_user.lName}', style: robotoMedium,
+                                  ) : Text('user_deleted'.tr, style: robotoMedium),
+                                  SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+
+                                  Text(
+                                    '${_type.tr}',
+                                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                                  ),
+                                ])),
+                              ]),
+                            ),
+
+                            Positioned(
+                              right: 5,bottom: 5,
+                              child: Text(
+                                DateConverter.localDateToIsoStringAMPM(DateConverter.dateTimeStringToDate(
+                                    _conversation.conversations[index].lastMessageTime)),
+                                style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.fontSizeExtraSmall),
+                              ),
+                            ),
+
+                            GetBuilder<UserController>(builder: (userController) {
+                              return (userController.userInfoModel != null && userController.userInfoModel.userInfo != null
+                                  && _conversation.conversations[index].lastMessage.senderId != userController.userInfoModel.userInfo.id
+                                  && _conversation.conversations[index].unreadMessageCount > 0) ? Positioned(right: 5,top: 5,
+                                child: Container(
+                                  padding: const EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                                  decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle),
+                                  child: Text(
+                                    _conversation.conversations[index].unreadMessageCount.toString(),
+                                    style: robotoMedium.copyWith(color: Theme.of(context).cardColor, fontSize: Dimensions.fontSizeExtraSmall),
+                                  ),
+                                ),
+                              ) : SizedBox();
+                            }),
+
+                          ]),
+                        ),
+                      );
                     },
-                    child: Scrollbar(child: SingleChildScrollView(controller: _scrollController,
-                        child: Center(child: SizedBox(width: 1170,
-                        child:  PaginatedListView(
-                          scrollController: _scrollController,
-                          onPaginate: (int offset) => chatController.getConversationList(offset),
-                          totalSize: _conversation.totalSize,
-                          offset: _conversation.offset,
-                          enabledPagination: chatController.searchConversationModel == null,
-                          productView: ListView.builder(
-                            itemCount: _conversation.conversations.length,
-                            padding: EdgeInsets.zero,
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
+                  ),
+                ))),
+              ),
+            ) : Center(child: Text('no_conversation_found'.tr)) : Center(child: CircularProgressIndicator()) : NotLoggedInScreen()),
 
-                              Conversation conversation = _conversation.conversations[index];
-
-                              User _user;
-                              String _type;
-                              if(conversation.senderType == UserType.delivery_man.name) {
-                                _user = conversation.receiver;
-                                _type = conversation.receiverType;
-                              }else {
-                                _user = conversation.sender;
-                                _type = conversation.senderType;
-                              }
-
-                              String _baseUrl = '';
-                              if(_type == UserType.customer.name) {
-                                _baseUrl = Get.find<SplashController>().configModel.baseUrls.customerImageUrl;
-                              }else {
-                                _baseUrl = Get.find<SplashController>().configModel.baseUrls.restaurantImageUrl;
-                              }
-
-                              return Container(
-                                margin: EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
-                                  boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 1, blurRadius: 5)],
-                                ),
-                                child: CustomInkWell(
-                                  onTap: (){
-                                    if(_user != null){
-                                      Get.toNamed(RouteHelper.getChatRoute(
-                                        notificationBody: NotificationBody(
-                                          type: conversation.senderType, notificationType: NotificationType.message,
-                                          customerId: _type == UserType.customer.name ? _user.userId : null,
-                                          vendorId: _type == UserType.vendor.name ? _user.vendorId : null,
-                                        ),
-                                        conversationId: conversation.id,
-                                      )).then((value) => Get.find<ChatController>().getConversationList(1));
-                                    }else{
-                                      showCustomSnackBar('${_type.tr} ${'not_found'.tr}');
-                                    }
-                                  },
-                                  highlightColor: Theme.of(context).backgroundColor.withOpacity(0.1),
-                                  radius: Dimensions.RADIUS_SMALL,
-                                  child: Stack(children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-                                      child: Row(children: [
-                                        ClipOval(
-                                          child: CustomImage(
-                                            height: 50, width: 50,fit: BoxFit.cover,
-                                            image: '$_baseUrl/${_user != null ? _user.image : ''}'?? '',
-                                          ),
-                                        ),
-                                        SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
-
-                                        Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-                                          _user != null ? Text('${_user.fName} ${_user.lName}', style: robotoMedium)
-                                              : Text('${_type.tr} ${'deleted'.tr}', style: robotoMedium),
-                                          SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-
-                                          Text(
-                                            '${_type.tr}',
-                                            style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Theme.of(context).disabledColor),
-                                          ),
-                                        ])),
-                                      ]),
-                                    ),
-
-                                    Positioned( right: 5,bottom: 5,
-                                      child: Text(
-                                        DateConverter.localDateToIsoStringAMPM(DateConverter.dateTimeStringToDate(conversation.lastMessageTime)),
-                                        style: robotoRegular.copyWith(color: Theme.of(context).hintColor, fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL),
-                                      ),
-                                    ),
-
-                                    conversation.unreadMessageCount > 0 ? Positioned( right: 5,top: 5,
-                                      child: Container(
-                                          padding: EdgeInsets.all((conversation.lastMessage.senderId == _user.id) ? Dimensions.PADDING_SIZE_EXTRA_SMALL : 0.0),
-                                          decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle),
-                                          child: Text(
-                                            conversation.lastMessage != null ? (conversation.lastMessage.senderId == _user.id)
-                                                ? conversation.unreadMessageCount.toString() : '' : conversation.unreadMessageCount.toString(),
-                                            style: robotoMedium.copyWith(color: Theme.of(context).cardColor, fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL),
-                                          )),
-                                    ) : SizedBox(),
-
-                                  ]),
-                                ),
-                              );
-                            },
-                          ),
-                        ))))),
-                  ) : Center(child: Text('no_conversation_found'.tr, style: robotoMedium)) : Center(child: CircularProgressIndicator()),
-            ) ,
           ]),
-        );
-      }),
-    );
+        ),
+      );
+    });
   }
 }

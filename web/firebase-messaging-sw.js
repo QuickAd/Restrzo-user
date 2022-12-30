@@ -1,19 +1,39 @@
-importScripts("https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/7.20.0/firebase-messaging.js");
+importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js");
 
 firebase.initializeApp({
-  apiKey: "AIzaSyAMLk1-dj8g0qCqU3DkxLKHbrT0VhK5EeQ",
-  authDomain: "e-food-9e6e3.firebaseapp.com",
-  projectId: "e-food-9e6e3",
-  storageBucket: "e-food-9e6e3.appspot.com",
-  messagingSenderId: "410522356318",
-  appId: "1:410522356318:web:c0983d7d2f5e3e933dc2cf",
+  apiKey: "AIzaSyCeaw_gVN0iQwFHyuF8pQ6PbVDmSVQw8AY",
+  authDomain: "stackfood-bd3ee.firebaseapp.com",
+  projectId: "stackfood-bd3ee",
+  storageBucket: "stackfood-bd3ee.appspot.com",
+  messagingSenderId: "1049699819506",
+  appId: "1:1049699819506:web:a4b5e3bedc729aab89956b",
   databaseURL: "...",
 });
 
 const messaging = firebase.messaging();
 
-// Optional:
-messaging.onBackgroundMessage((message) => {
-  console.log("onBackgroundMessage", message);
+messaging.setBackgroundMessageHandler(function (payload) {
+    const promiseChain = clients
+        .matchAll({
+            type: "window",
+            includeUncontrolled: true
+        })
+        .then(windowClients => {
+            for (let i = 0; i < windowClients.length; i++) {
+                const windowClient = windowClients[i];
+                windowClient.postMessage(payload);
+            }
+        })
+        .then(() => {
+            const title = payload.notification.title;
+            const options = {
+                body: payload.notification.score
+              };
+            return registration.showNotification(title, options);
+        });
+    return promiseChain;
+});
+self.addEventListener('notificationclick', function (event) {
+    console.log('notification received: ', event)
 });

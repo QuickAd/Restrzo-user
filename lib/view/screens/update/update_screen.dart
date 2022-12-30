@@ -1,9 +1,9 @@
-import 'package:efood_multivendor_driver/controller/splash_controller.dart';
-import 'package:efood_multivendor_driver/util/dimensions.dart';
-import 'package:efood_multivendor_driver/util/images.dart';
-import 'package:efood_multivendor_driver/util/styles.dart';
-import 'package:efood_multivendor_driver/view/base/custom_button.dart';
-import 'package:efood_multivendor_driver/view/base/custom_snackbar.dart';
+import 'package:efood_multivendor/controller/splash_controller.dart';
+import 'package:efood_multivendor/util/dimensions.dart';
+import 'package:efood_multivendor/util/images.dart';
+import 'package:efood_multivendor/util/styles.dart';
+import 'package:efood_multivendor/view/base/custom_button.dart';
+import 'package:efood_multivendor/view/base/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -49,7 +49,7 @@ class UpdateScreen extends StatelessWidget {
                 _appUrl = Get.find<SplashController>().configModel.appUrlIos;
               }
               if(await canLaunchUrlString(_appUrl)) {
-                launchUrlString(_appUrl,mode: LaunchMode.externalApplication);
+                launchUrlString(_appUrl, mode: LaunchMode.externalApplication);
               }else {
                 showCustomSnackBar('${'can_not_launch'.tr} $_appUrl');
               }

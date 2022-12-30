@@ -1,17 +1,14 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
-import 'package:efood_multivendor_driver/data/model/response/address_model.dart';
-import 'package:http_parser/http_parser.dart';
+import 'package:get/get_connect/http/src/request/request.dart';
 
-import 'package:efood_multivendor_driver/data/model/response/error_response.dart';
-import 'package:efood_multivendor_driver/util/app_constants.dart';
+import 'package:efood_multivendor/data/model/response/address_model.dart';
+import 'package:efood_multivendor/data/model/response/error_response.dart';
+import 'package:efood_multivendor/util/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:path/path.dart';
-import 'package:flutter/foundation.dart' as Foundation;
 import 'package:http/http.dart' as Http;
 
 class ApiClient extends GetxService {
@@ -29,17 +26,22 @@ class ApiClient extends GetxService {
     AddressModel _addressModel;
     try {
       _addressModel = AddressModel.fromJson(jsonDecode(sharedPreferences.getString(AppConstants.USER_ADDRESS)));
-      print('-------------');
       print( _addressModel.toJson());
     }catch(e) {}
-    updateHeader(token, _addressModel == null ? null : _addressModel.zoneIds, sharedPreferences.getString(AppConstants.LANGUAGE_CODE));
+    updateHeader(
+      token, _addressModel == null ? null : _addressModel.zoneIds,
+      sharedPreferences.getString(AppConstants.LANGUAGE_CODE), _addressModel == null ? null : _addressModel.latitude,
+        _addressModel == null ? null : _addressModel.longitude
+    );
   }
 
-  void updateHeader(String token, List<int> zoneIDs, String languageCode) {
+  void updateHeader(String token, List<int> zoneIDs, String languageCode, String latitude, String longitude) {
     _mainHeaders = {
       'Content-Type': 'application/json; charset=UTF-8',
       AppConstants.ZONE_ID: zoneIDs != null ? jsonEncode(zoneIDs) : null,
       AppConstants.LOCALIZATION_KEY: languageCode ?? AppConstants.languages[0].languageCode,
+      AppConstants.LATITUDE: latitude != null ? jsonEncode(latitude) : null,
+      AppConstants.LONGITUDE: longitude != null ? jsonEncode(longitude) : null,
       'Authorization': 'Bearer $token'
     };
   }
@@ -80,19 +82,11 @@ class ApiClient extends GetxService {
       _request.headers.addAll(headers ?? _mainHeaders);
       for(MultipartBody multipart in multipartBody) {
         if(multipart.file != null) {
-          if(Foundation.kIsWeb) {
-            Uint8List _list = await multipart.file.readAsBytes();
-            Http.MultipartFile _part = Http.MultipartFile(
-              multipart.key, multipart.file.readAsBytes().asStream(), _list.length,
-              filename: basename(multipart.file.path), contentType: MediaType('image', 'jpg'),
-            );
-            _request.files.add(_part);
-          }else {
-            File _file = File(multipart.file.path);
-            _request.files.add(Http.MultipartFile(
-              multipart.key, _file.readAsBytes().asStream(), _file.lengthSync(), filename: _file.path.split('/').last,
-            ));
-          }
+          Uint8List _list = await multipart.file.readAsBytes();
+          _request.files.add(Http.MultipartFile(
+            multipart.key, multipart.file.readAsBytes().asStream(), _list.length,
+            filename: '${DateTime.now().toString()}.png',
+          ));
         }
       }
       _request.fields.addAll(body);
@@ -138,6 +132,7 @@ class ApiClient extends GetxService {
     }catch(e) {}
     Response _response = Response(
       body: _body != null ? _body : response.body, bodyString: response.body.toString(),
+      request: Request(headers: response.request.headers, method: response.request.method, url: response.request.url),
       headers: response.headers, statusCode: response.statusCode, statusText: response.reasonPhrase,
     );
     if(_response.statusCode != 200 && _response.body != null && _response.body is !String) {

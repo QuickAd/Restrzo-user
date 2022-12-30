@@ -1,8 +1,8 @@
-import 'package:efood_multivendor_driver/controller/splash_controller.dart';
+import 'package:efood_multivendor/controller/splash_controller.dart';
 import 'package:get/get.dart';
 
 class PriceConverter {
-  static String convertPrice(double price, {double discount, String discountType, int asFixed}) {
+  static String convertPrice(double price, {double discount, String discountType}) {
     if(discount != null && discountType != null){
       if(discountType == 'amount') {
         price = price - discount;
@@ -10,10 +10,13 @@ class PriceConverter {
         price = price - ((discount / 100) * price);
       }
     }
-    return '${Get.find<SplashController>().configModel.currencySymbol} '
-        '${(price).toStringAsFixed(asFixed ?? Get.find<SplashController>().configModel.digitAfterDecimalPoint)
-        .replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
+    bool _isRightSide = Get.find<SplashController>().configModel.currencySymbolDirection == 'right';
+    return '${_isRightSide ? '' : Get.find<SplashController>().configModel.currencySymbol+' '}'
+        '${(price).toStringAsFixed(Get.find<SplashController>().configModel.digitAfterDecimalPoint)
+        .replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}'
+        '${_isRightSide ? ' '+Get.find<SplashController>().configModel.currencySymbol : ''}';
   }
+
 
   static double convertWithDiscount(double price, double discount, String discountType) {
     if(discountType == 'amount') {

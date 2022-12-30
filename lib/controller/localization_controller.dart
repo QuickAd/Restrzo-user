@@ -1,16 +1,18 @@
 import 'dart:convert';
 
-import 'package:efood_multivendor_driver/data/api/api_client.dart';
-import 'package:efood_multivendor_driver/data/model/response/address_model.dart';
-import 'package:efood_multivendor_driver/data/model/response/language_model.dart';
-import 'package:efood_multivendor_driver/util/app_constants.dart';
+import 'package:efood_multivendor/controller/location_controller.dart';
+import 'package:efood_multivendor/data/api/api_client.dart';
+import 'package:efood_multivendor/data/model/response/address_model.dart';
+import 'package:efood_multivendor/data/model/response/language_model.dart';
+import 'package:efood_multivendor/util/app_constants.dart';
+import 'package:efood_multivendor/view/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalizationController extends GetxController implements GetxService {
-  final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
+  final ApiClient apiClient;
 
   LocalizationController({@required this.sharedPreferences, @required this.apiClient}) {
     loadCurrentLanguage();
@@ -37,9 +39,14 @@ class LocalizationController extends GetxController implements GetxService {
       _addressModel = AddressModel.fromJson(jsonDecode(sharedPreferences.getString(AppConstants.USER_ADDRESS)));
     }catch(e) {}
     apiClient.updateHeader(
-      sharedPreferences.getString(AppConstants.TOKEN), _addressModel == null ? null : _addressModel.zoneIds , locale.languageCode,
+      sharedPreferences.getString(AppConstants.TOKEN), _addressModel == null ? null : _addressModel.zoneIds,
+      locale.languageCode, _addressModel == null ? null : _addressModel.latitude,
+      _addressModel == null ? null : _addressModel.longitude,
     );
     saveLanguage(_locale);
+    if(Get.find<LocationController>().getUserAddress() != null) {
+      HomeScreen.loadData(true);
+    }
     update();
   }
 

@@ -1,6 +1,6 @@
-import 'package:efood_multivendor_driver/helper/responsive_helper.dart';
-import 'package:efood_multivendor_driver/util/dimensions.dart';
-import 'package:efood_multivendor_driver/util/styles.dart';
+import 'package:efood_multivendor/helper/responsive_helper.dart';
+import 'package:efood_multivendor/util/dimensions.dart';
+import 'package:efood_multivendor/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,9 +11,10 @@ class PaginatedListView extends StatefulWidget {
   final int offset;
   final Widget productView;
   final bool enabledPagination;
+  final bool reverse;
   const PaginatedListView({
     Key key, @required this.scrollController, @required this.onPaginate, @required this.totalSize,
-    @required this.offset, @required this.productView, this.enabledPagination = true,
+    @required this.offset, @required this.productView, this.enabledPagination = true, this.reverse = false,
   }) : super(key: key);
 
   @override
@@ -77,7 +78,7 @@ class _PaginatedListViewState extends State<PaginatedListView> {
 
     return Column(children: [
 
-      widget.productView,
+      widget.reverse ? SizedBox() : widget.productView,
 
       (ResponsiveHelper.isDesktop(context) && (widget.totalSize == null || _offset >= (widget.totalSize / 10).ceil() || _offsetList.contains(_offset+1))) ? SizedBox() : Center(child: Padding(
         padding: (_isLoading || ResponsiveHelper.isDesktop(context)) ? EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL) : EdgeInsets.zero,
@@ -90,10 +91,12 @@ class _PaginatedListViewState extends State<PaginatedListView> {
               borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
               color: Theme.of(context).primaryColor,
             ),
-            child: Text('view_more'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE, color: Colors.white)),
+            child: Text('view_more'.tr, style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge, color: Colors.white)),
           ),
         ) : SizedBox(),
       )),
+
+      widget.reverse ? widget.productView : SizedBox(),
 
     ]);
   }

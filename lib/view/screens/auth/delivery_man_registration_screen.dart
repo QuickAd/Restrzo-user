@@ -1,17 +1,17 @@
 import 'dart:io';
 
 import 'package:country_code_picker/country_code.dart';
-import 'package:efood_multivendor_driver/controller/auth_controller.dart';
-import 'package:efood_multivendor_driver/controller/splash_controller.dart';
-import 'package:efood_multivendor_driver/data/model/body/delivery_man_body.dart';
-import 'package:efood_multivendor_driver/util/dimensions.dart';
-import 'package:efood_multivendor_driver/util/images.dart';
-import 'package:efood_multivendor_driver/util/styles.dart';
-import 'package:efood_multivendor_driver/view/base/custom_app_bar.dart';
-import 'package:efood_multivendor_driver/view/base/custom_button.dart';
-import 'package:efood_multivendor_driver/view/base/custom_snackbar.dart';
-import 'package:efood_multivendor_driver/view/base/custom_text_field.dart';
-import 'package:efood_multivendor_driver/view/screens/auth/widget/code_picker_widget.dart';
+import 'package:efood_multivendor/controller/auth_controller.dart';
+import 'package:efood_multivendor/controller/splash_controller.dart';
+import 'package:efood_multivendor/data/model/body/delivery_man_body.dart';
+import 'package:efood_multivendor/util/dimensions.dart';
+import 'package:efood_multivendor/util/images.dart';
+import 'package:efood_multivendor/util/styles.dart';
+import 'package:efood_multivendor/view/base/custom_app_bar.dart';
+import 'package:efood_multivendor/view/base/custom_button.dart';
+import 'package:efood_multivendor/view/base/custom_snackbar.dart';
+import 'package:efood_multivendor/view/base/custom_text_field.dart';
+import 'package:efood_multivendor/view/screens/auth/widget/code_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -65,11 +65,11 @@ class _DeliveryManRegistrationScreenState extends State<DeliveryManRegistrationS
           Expanded(child: SingleChildScrollView(
             padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
             physics: BouncingScrollPhysics(),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Center(child: SizedBox(width: Dimensions.WEB_MAX_WIDTH, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
               Align(alignment: Alignment.center, child: Text(
                 'delivery_man_image'.tr,
-                style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
+                style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
               )),
               SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
               Align(alignment: Alignment.center, child: Stack(children: [
@@ -146,7 +146,7 @@ class _DeliveryManRegistrationScreenState extends State<DeliveryManRegistrationS
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
-                    // boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 1, blurRadius: 5, offset: Offset(0, 5))],
+                    boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 1, blurRadius: 5, offset: Offset(0, 5))],
                   ),
                   child: CodePickerWidget(
                     onChanged: (CountryCode countryCode) {
@@ -159,11 +159,11 @@ class _DeliveryManRegistrationScreenState extends State<DeliveryManRegistrationS
                     showFlagMain: true,
                     flagWidth: 30,
                     textStyle: robotoRegular.copyWith(
-                      fontSize: Dimensions.FONT_SIZE_LARGE, color: Theme.of(context).textTheme.bodyText1.color,
+                      fontSize: Dimensions.fontSizeLarge, color: Theme.of(context).textTheme.bodyText1.color,
                     ),
                   ),
                 ),
-                // SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+                SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
                 Expanded(flex: 1, child: CustomTextField(
                   hintText: 'phone'.tr,
                   controller: _phoneController,
@@ -189,14 +189,14 @@ class _DeliveryManRegistrationScreenState extends State<DeliveryManRegistrationS
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
                     'delivery_man_type'.tr,
-                    style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
+                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
                   ),
                   SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
-                      // boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 2, blurRadius: 5, offset: Offset(0, 5))],
+                      boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 2, blurRadius: 5, offset: Offset(0, 5))],
                     ),
                     child: DropdownButton<String>(
                       value: authController.dmTypeList[authController.dmTypeIndex],
@@ -218,14 +218,14 @@ class _DeliveryManRegistrationScreenState extends State<DeliveryManRegistrationS
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
                     'zone'.tr,
-                    style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
+                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
                   ),
                   SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                   authController.zoneList != null ? Container(
                     padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
-                      // boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 2, blurRadius: 5, offset: Offset(0, 5))],
+                      boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 2, blurRadius: 5, offset: Offset(0, 5))],
                     ),
                     child: DropdownButton<int>(
                       value: authController.selectedZoneIndex,
@@ -251,14 +251,14 @@ class _DeliveryManRegistrationScreenState extends State<DeliveryManRegistrationS
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
                     'identity_type'.tr,
-                    style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
+                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
                   ),
                   SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
-                      // boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 2, blurRadius: 5, offset: Offset(0, 5))],
+                      boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 2, blurRadius: 5, offset: Offset(0, 5))],
                     ),
                     child: DropdownButton<String>(
                       value: authController.identityTypeList[authController.identityTypeIndex],
@@ -291,7 +291,7 @@ class _DeliveryManRegistrationScreenState extends State<DeliveryManRegistrationS
 
               Text(
                 'identity_images'.tr,
-                style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
+                style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
               ),
               SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               SizedBox(
@@ -352,7 +352,7 @@ class _DeliveryManRegistrationScreenState extends State<DeliveryManRegistrationS
                 ),
               ),
 
-            ]),
+            ]))),
           )),
 
           !authController.isLoading ? CustomButton(

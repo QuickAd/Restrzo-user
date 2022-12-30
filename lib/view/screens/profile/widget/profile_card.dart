@@ -1,5 +1,5 @@
-import 'package:efood_multivendor_driver/util/dimensions.dart';
-import 'package:efood_multivendor_driver/util/styles.dart';
+import 'package:efood_multivendor/util/dimensions.dart';
+import 'package:efood_multivendor/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,11 +19,11 @@ class ProfileCard extends StatelessWidget {
       ),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         Text(data, style: robotoMedium.copyWith(
-          fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE, color: Theme.of(context).primaryColor,
+          fontSize: Dimensions.fontSizeExtraLarge, color: Theme.of(context).primaryColor,
         )),
         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
         Text(title, style: robotoRegular.copyWith(
-          fontSize: Dimensions.FONT_SIZE_SMALL, color: Theme.of(context).disabledColor,
+          fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor,
         )),
       ]),
     ));

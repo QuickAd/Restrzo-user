@@ -1,4 +1,4 @@
-import 'package:efood_multivendor_driver/data/model/response/zone_response_model.dart';
+import 'package:efood_multivendor/data/model/response/zone_response_model.dart';
 
 class AddressModel {
   int id;

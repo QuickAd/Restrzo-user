@@ -1,5 +1,5 @@
-import 'package:efood_multivendor_driver/util/dimensions.dart';
-import 'package:efood_multivendor_driver/util/styles.dart';
+import 'package:efood_multivendor/util/dimensions.dart';
+import 'package:efood_multivendor/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +21,7 @@ class ProfileButton extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
           boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 1, blurRadius: 5)],
         ),
         child: Row(children: [

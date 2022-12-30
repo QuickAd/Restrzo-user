@@ -1,23 +1,27 @@
-import 'package:efood_multivendor_driver/data/api/api_checker.dart';
-import 'package:efood_multivendor_driver/data/model/response/config_model.dart';
-import 'package:efood_multivendor_driver/data/repository/splash_repo.dart';
+import 'package:efood_multivendor/data/api/api_checker.dart';
+import 'package:efood_multivendor/data/api/api_client.dart';
+import 'package:efood_multivendor/data/model/response/config_model.dart';
+import 'package:efood_multivendor/data/repository/splash_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class SplashController extends GetxController implements GetxService {
   final SplashRepo splashRepo;
   SplashController({@required this.splashRepo});
 
   ConfigModel _configModel;
-  DateTime _currentTime = DateTime.now();
   bool _firstTimeConnectionCheck = true;
+  bool _hasConnection = true;
+  int _nearestRestaurantIndex = -1;
 
   ConfigModel get configModel => _configModel;
   DateTime get currentTime => DateTime.now();
   bool get firstTimeConnectionCheck => _firstTimeConnectionCheck;
+  bool get hasConnection => _hasConnection;
+  int get nearestRestaurantIndex => _nearestRestaurantIndex;
 
   Future<bool> getConfigData() async {
+    _hasConnection = true;
     Response response = await splashRepo.getConfigData();
     bool _isSuccess = false;
     if(response.statusCode == 200) {
@@ -25,6 +29,9 @@ class SplashController extends GetxController implements GetxService {
       _isSuccess = true;
     }else {
       ApiChecker.checkApi(response);
+      if(response.statusText == ApiClient.noInternetMessage) {
+        _hasConnection = false;
+      }
       _isSuccess = false;
     }
     update();
@@ -35,34 +42,23 @@ class SplashController extends GetxController implements GetxService {
     return splashRepo.initSharedData();
   }
 
-  Future<bool> removeSharedData() {
-    return splashRepo.removeSharedData();
+  bool showIntro() {
+    return splashRepo.showIntro();
   }
 
-  bool isRestaurantClosed() {
-    DateTime _open = DateFormat('hh:mm').parse('');
-    DateTime _close = DateFormat('hh:mm').parse('');
-    DateTime _openTime = DateTime(_currentTime.year, _currentTime.month, _currentTime.day, _open.hour, _open.minute);
-    DateTime _closeTime = DateTime(_currentTime.year, _currentTime.month, _currentTime.day, _close.hour, _close.minute);
-    if(_closeTime.isBefore(_openTime)) {
-      _closeTime = _closeTime.add(Duration(days: 1));
-    }
-    if(_currentTime.isAfter(_openTime) && _currentTime.isBefore(_closeTime)) {
-      return false;
-    }else {
-      return true;
-    }
-  }
-
-  void setLanguageIntro(bool intro) {
-    splashRepo.setLanguageIntro(intro);
-  }
-
-  bool showLanguageIntro() {
-    return splashRepo.showLanguageIntro();
+  void disableIntro() {
+    splashRepo.disableIntro();
   }
 
   void setFirstTimeConnectionCheck(bool isChecked) {
     _firstTimeConnectionCheck = isChecked;
   }
+
+  void setNearestRestaurantIndex(int index, {bool notify = true}) {
+    _nearestRestaurantIndex = index;
+    if(notify) {
+      update();
+    }
+  }
+
 }

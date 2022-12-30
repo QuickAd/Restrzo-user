@@ -1,4 +1,4 @@
-# efood_multivendor_driver
+# efood_multivendor
 
 A new Flutter application.
 

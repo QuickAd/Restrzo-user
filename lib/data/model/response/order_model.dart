@@ -1,3 +1,6 @@
+import 'package:efood_multivendor/data/model/response/address_model.dart';
+import 'package:efood_multivendor/data/model/response/restaurant_model.dart';
+
 class PaginatedOrderModel {
   int totalSize;
   String limit;
@@ -36,106 +39,121 @@ class OrderModel {
   int userId;
   double orderAmount;
   double couponDiscountAmount;
+  String couponDiscountTitle;
   String paymentStatus;
   String orderStatus;
   double totalTaxAmount;
   String paymentMethod;
-  String transactionReference;
-  int deliveryAddressId;
-  int deliveryManId;
+  String couponCode;
+  String orderNote;
   String orderType;
-  int restaurantId;
   String createdAt;
   String updatedAt;
   double deliveryCharge;
-  double originalDeliveryCharge;
-  double dmTips;
   String scheduleAt;
-  String restaurantName;
-  String restaurantAddress;
-  String restaurantLat;
-  String restaurantLng;
-  String restaurantLogo;
-  String restaurantPhone;
-  String restaurantDeliveryTime;
-  int vendorId;
+  String otp;
+  String pending;
+  String accepted;
+  String confirmed;
+  String processing;
+  String handover;
+  String pickedUp;
+  String delivered;
+  String canceled;
+  String refundRequested;
+  String refunded;
+  int scheduled;
+  double restaurantDiscountAmount;
+  String failed;
   int detailsCount;
-  String orderNote;
-  DeliveryAddress deliveryAddress;
-  Customer customer;
+  double dmTips;
   int processingTime;
+  DeliveryMan deliveryMan;
+  Restaurant restaurant;
+  AddressModel deliveryAddress;
 
   OrderModel(
       {this.id,
         this.userId,
         this.orderAmount,
         this.couponDiscountAmount,
+        this.couponDiscountTitle,
         this.paymentStatus,
         this.orderStatus,
         this.totalTaxAmount,
         this.paymentMethod,
-        this.transactionReference,
-        this.deliveryAddressId,
-        this.deliveryManId,
+        this.couponCode,
+        this.orderNote,
         this.orderType,
-        this.restaurantId,
         this.createdAt,
         this.updatedAt,
         this.deliveryCharge,
-        this.originalDeliveryCharge,
-        this.dmTips,
         this.scheduleAt,
-        this.restaurantName,
-        this.restaurantAddress,
-        this.restaurantLat,
-        this.restaurantLng,
-        this.restaurantLogo,
-        this.restaurantPhone,
-        this.restaurantDeliveryTime,
-        this.vendorId,
+        this.otp,
+        this.pending,
+        this.accepted,
+        this.confirmed,
+        this.processing,
+        this.handover,
+        this.pickedUp,
+        this.delivered,
+        this.canceled,
+        this.refundRequested,
+        this.refunded,
+        this.scheduled,
+        this.restaurantDiscountAmount,
+        this.failed,
+        this.dmTips,
+        this.processingTime,
         this.detailsCount,
-        this.orderNote,
+        this.deliveryMan,
         this.deliveryAddress,
-        this.customer,
-        this.processingTime});
+        this.restaurant,
+      });
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
     orderAmount = json['order_amount'].toDouble();
     couponDiscountAmount = json['coupon_discount_amount'].toDouble();
+    couponDiscountTitle = json['coupon_discount_title'];
     paymentStatus = json['payment_status'];
     orderStatus = json['order_status'];
     totalTaxAmount = json['total_tax_amount'].toDouble();
     paymentMethod = json['payment_method'];
-    transactionReference = json['transaction_reference'];
-    deliveryAddressId = json['delivery_address_id'];
-    deliveryManId = json['delivery_man_id'];
+    couponCode = json['coupon_code'];
+    orderNote = json['order_note'];
     orderType = json['order_type'];
-    restaurantId = json['restaurant_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     deliveryCharge = json['delivery_charge'].toDouble();
-    originalDeliveryCharge = json['original_delivery_charge'].toDouble();
-    dmTips = json['dm_tips'].toDouble();
     scheduleAt = json['schedule_at'];
-    restaurantName = json['restaurant_name'];
-    restaurantAddress = json['restaurant_address'];
-    restaurantLat = json['restaurant_lat'];
-    restaurantLng = json['restaurant_lng'];
-    restaurantLogo = json['restaurant_logo'];
-    restaurantPhone = json['restaurant_phone'];
-    restaurantDeliveryTime = json['restaurant_delivery_time'];
-    vendorId = json['vendor_id'];
+    otp = json['otp'];
+    pending = json['pending'];
+    accepted = json['accepted'];
+    confirmed = json['confirmed'];
+    processing = json['processing'];
+    handover = json['handover'];
+    pickedUp = json['picked_up'];
+    delivered = json['delivered'];
+    canceled = json['canceled'];
+    refundRequested = json['refund_requested'];
+    refunded = json['refunded'];
+    scheduled = json['scheduled'];
+    dmTips = json['dm_tips'].toDouble();
+    restaurantDiscountAmount = json['restaurant_discount_amount'].toDouble();
+    failed = json['failed'];
     detailsCount = json['details_count'];
-    orderNote = json['order_note'];
-    deliveryAddress = json['delivery_address'] != null
-        ? new DeliveryAddress.fromJson(json['delivery_address'])
-        : null;
-    customer = json['customer'] != null
-        ? new Customer.fromJson(json['customer'])
-        : null;
     processingTime = json['processing_time'];
+    deliveryMan = json['delivery_man'] != null
+        ? new DeliveryMan.fromJson(json['delivery_man'])
+        : null;
+    restaurant = json['restaurant'] != null
+        ? new Restaurant.fromJson(json['restaurant'])
+        : null;
+    deliveryAddress = json['delivery_address'] != null
+        ? new AddressModel.fromJson(json['delivery_address'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -144,143 +162,96 @@ class OrderModel {
     data['user_id'] = this.userId;
     data['order_amount'] = this.orderAmount;
     data['coupon_discount_amount'] = this.couponDiscountAmount;
+    data['coupon_discount_title'] = this.couponDiscountTitle;
     data['payment_status'] = this.paymentStatus;
     data['order_status'] = this.orderStatus;
     data['total_tax_amount'] = this.totalTaxAmount;
     data['payment_method'] = this.paymentMethod;
-    data['transaction_reference'] = this.transactionReference;
-    data['delivery_address_id'] = this.deliveryAddressId;
-    data['delivery_man_id'] = this.deliveryManId;
+    data['coupon_code'] = this.couponCode;
+    data['order_note'] = this.orderNote;
     data['order_type'] = this.orderType;
-    data['restaurant_id'] = this.restaurantId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['delivery_charge'] = this.deliveryCharge;
-    data['original_delivery_charge'] = this.originalDeliveryCharge;
-    data['dm_tips'] = this.dmTips;
     data['schedule_at'] = this.scheduleAt;
-    data['restaurant_name'] = this.restaurantName;
-    data['restaurant_address'] = this.restaurantAddress;
-    data['restaurant_lat'] = this.restaurantLat;
-    data['restaurant_lng'] = this.restaurantLng;
-    data['restaurant_logo'] = this.restaurantLogo;
-    data['restaurant_phone'] = this.restaurantPhone;
-    data['restaurant_delivery_time'] = this.restaurantDeliveryTime;
-    data['vendor_id'] = this.vendorId;
+    data['otp'] = this.otp;
+    data['pending'] = this.pending;
+    data['accepted'] = this.accepted;
+    data['confirmed'] = this.confirmed;
+    data['processing'] = this.processing;
+    data['handover'] = this.handover;
+    data['picked_up'] = this.pickedUp;
+    data['delivered'] = this.delivered;
+    data['canceled'] = this.canceled;
+    data['refund_requested'] = this.refundRequested;
+    data['refunded'] = this.refunded;
+    data['scheduled'] = this.scheduled;
+    data['restaurant_discount_amount'] = this.restaurantDiscountAmount;
+    data['failed'] = this.failed;
+    data['dm_tips'] = this.dmTips;
+    data['processing_time'] = this.processingTime;
     data['details_count'] = this.detailsCount;
-    data['order_note'] = this.orderNote;
+    if (this.deliveryMan != null) {
+      data['delivery_man'] = this.deliveryMan.toJson();
+    }
+    if (this.restaurant != null) {
+      data['restaurant'] = this.restaurant.toJson();
+    }
     if (this.deliveryAddress != null) {
       data['delivery_address'] = this.deliveryAddress.toJson();
     }
-    if (this.customer != null) {
-      data['customer'] = this.customer.toJson();
-    }
-    data['processing_time'] = this.processingTime;
     return data;
   }
 }
 
-class DeliveryAddress {
-  int id;
-  String addressType;
-  String contactPersonNumber;
-  String address;
-  String latitude;
-  String longitude;
-  int userId;
-  String contactPersonName;
-  String createdAt;
-  String updatedAt;
-  int zoneId;
-  String streetNumber;
-  String house;
-  String floor;
-
-  DeliveryAddress(
-      {this.id,
-        this.addressType,
-        this.contactPersonNumber,
-        this.address,
-        this.latitude,
-        this.longitude,
-        this.userId,
-        this.contactPersonName,
-        this.createdAt,
-        this.updatedAt,
-        this.zoneId,
-        this.streetNumber,
-        this.house,
-        this.floor});
-
-  DeliveryAddress.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    addressType = json['address_type'];
-    contactPersonNumber = json['contact_person_number'];
-    address = json['address'];
-    latitude = json['latitude'].toString();
-    longitude = json['longitude'].toString();
-    userId = json['user_id'];
-    contactPersonName = json['contact_person_name'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    zoneId = json['zone_id'];
-    streetNumber = json['road'];
-    house = json['house'];
-    floor = json['floor'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['address_type'] = this.addressType;
-    data['contact_person_number'] = this.contactPersonNumber;
-    data['address'] = this.address;
-    data['latitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-    data['user_id'] = this.userId;
-    data['contact_person_name'] = this.contactPersonName;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['zone_id'] = this.zoneId;
-    data['road'] = this.streetNumber;
-    data['house'] = this.house;
-    data['floor'] = this.floor;
-    return data;
-  }
-}
-
-class Customer {
+class DeliveryMan {
   int id;
   String fName;
   String lName;
   String phone;
   String email;
   String image;
-  String createdAt;
-  String updatedAt;
-  String cmFirebaseToken;
+  int zoneId;
+  int active;
+  int available;
+  double avgRating;
+  int ratingCount;
+  String lat;
+  String lng;
+  String location;
 
-  Customer(
+  DeliveryMan(
       {this.id,
         this.fName,
         this.lName,
         this.phone,
         this.email,
         this.image,
-        this.createdAt,
-        this.updatedAt,
-        this.cmFirebaseToken});
+        this.zoneId,
+        this.active,
+        this.available,
+        this.avgRating,
+        this.ratingCount,
+        this.lat,
+        this.lng,
+        this.location
+      });
 
-  Customer.fromJson(Map<String, dynamic> json) {
+  DeliveryMan.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     fName = json['f_name'];
     lName = json['l_name'];
     phone = json['phone'];
     email = json['email'];
     image = json['image'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    cmFirebaseToken = json['cm_firebase_token'];
+    zoneId = json['zone_id'];
+    active = json['active'];
+    available = json['available'];
+    avgRating = json['avg_rating'].toDouble();
+    ratingCount = json['rating_count'];
+    lat = json['lat'];
+    lng = json['lng'];
+    location = json['location'];
   }
 
   Map<String, dynamic> toJson() {
@@ -291,9 +262,14 @@ class Customer {
     data['phone'] = this.phone;
     data['email'] = this.email;
     data['image'] = this.image;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['cm_firebase_token'] = this.cmFirebaseToken;
+    data['zone_id'] = this.zoneId;
+    data['active'] = this.active;
+    data['available'] = this.available;
+    data['avg_rating'] = this.avgRating;
+    data['rating_count'] = this.ratingCount;
+    data['lat'] = this.lat;
+    data['lng'] = this.lng;
+    data['location'] = this.location;
     return data;
   }
 }

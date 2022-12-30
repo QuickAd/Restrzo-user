@@ -1,7 +1,7 @@
-import 'package:efood_multivendor_driver/data/api/api_checker.dart';
-import 'package:efood_multivendor_driver/data/model/response/notification_model.dart';
-import 'package:efood_multivendor_driver/data/repository/notification_repo.dart';
-import 'package:efood_multivendor_driver/helper/date_converter.dart';
+import 'package:efood_multivendor/data/api/api_checker.dart';
+import 'package:efood_multivendor/data/model/response/notification_model.dart';
+import 'package:efood_multivendor/data/repository/notification_repo.dart';
+import 'package:efood_multivendor/helper/date_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,28 +10,28 @@ class NotificationController extends GetxController implements GetxService {
   NotificationController({@required this.notificationRepo});
 
   List<NotificationModel> _notificationList;
+  bool _hasNotification = false;
   List<NotificationModel> get notificationList => _notificationList;
+  bool get hasNotification => _hasNotification;
 
-  Future<void> getNotificationList() async {
-    Response response = await notificationRepo.getNotificationList();
-    if (response.statusCode == 200) {
-      _notificationList = [];
-    response.body.forEach((notification) {
-        NotificationModel _notification = NotificationModel.fromJson(notification);
-        _notification.title = notification['data']['title'];
-        _notification.description = notification['data']['description'];
-        _notification.image = notification['data']['image'];
-        _notificationList.add(_notification);
-      });
-      _notificationList.sort((a, b) {
-        return DateConverter.isoStringToLocalDate(a.updatedAt).compareTo(DateConverter.isoStringToLocalDate(b.updatedAt));
-      });
-      Iterable iterable = _notificationList.reversed;
-      _notificationList = iterable.toList();
-    } else {
-      ApiChecker.checkApi(response);
+  Future<int> getNotificationList(bool reload) async {
+    if(_notificationList == null || reload) {
+      Response response = await notificationRepo.getNotificationList();
+      if (response.statusCode == 200) {
+        _notificationList = [];
+        response.body.forEach((notification) => _notificationList.add(NotificationModel.fromJson(notification)));
+        _notificationList.sort((a, b) {
+          return DateConverter.isoStringToLocalDate(a.updatedAt).compareTo(DateConverter.isoStringToLocalDate(b.updatedAt));
+        });
+        Iterable iterable = _notificationList.reversed;
+        _notificationList = iterable.toList();
+        _hasNotification = _notificationList.length != getSeenNotificationCount();
+      } else {
+        ApiChecker.checkApi(response);
+      }
+      update();
     }
-    update();
+    return _notificationList.length;
   }
 
   void saveSeenNotificationCount(int count) {
@@ -40,6 +40,10 @@ class NotificationController extends GetxController implements GetxService {
 
   int getSeenNotificationCount() {
     return notificationRepo.getSeenNotificationCount();
+  }
+
+  void clearNotification() {
+    _notificationList = null;
   }
 
 }

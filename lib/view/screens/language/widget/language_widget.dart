@@ -1,8 +1,8 @@
-import 'package:efood_multivendor_driver/controller/localization_controller.dart';
-import 'package:efood_multivendor_driver/data/model/response/language_model.dart';
-import 'package:efood_multivendor_driver/util/app_constants.dart';
-import 'package:efood_multivendor_driver/util/dimensions.dart';
-import 'package:efood_multivendor_driver/util/styles.dart';
+import 'package:efood_multivendor/controller/localization_controller.dart';
+import 'package:efood_multivendor/data/model/response/language_model.dart';
+import 'package:efood_multivendor/util/app_constants.dart';
+import 'package:efood_multivendor/util/dimensions.dart';
+import 'package:efood_multivendor/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

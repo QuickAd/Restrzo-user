@@ -1,11 +1,11 @@
 {
-    "name": "eFood Multi-vendor",
-    "short_name": "eFood Multi-vendor",
+    "name": "StackFood",
+    "short_name": "StackFood",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A multi-vendor e-commerce web app.",
+    "background_color": "#EF7822",
+    "theme_color": "#EF7822",
+    "description": "A multi-restaurant e-commerce web app.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

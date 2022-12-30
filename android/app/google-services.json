@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1052064962762",
-    "project_id": "retorzo-by-quicko-group",
-    "storage_bucket": "retorzo-by-quicko-group.appspot.com"
+    "project_number": "1049699819506",
+    "project_id": "stackfood-bd3ee",
+    "storage_bucket": "stackfood-bd3ee.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1052064962762:android:20ac69367d6ed0e7877c33",
+        "mobilesdk_app_id": "1:1049699819506:android:c80cf797b22c81f089956b",
         "android_client_info": {
-          "package_name": "quickogroup.retorzo.deliver"
+          "package_name": "com.sixamtech.stack_food"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+          "client_id": "1049699819506-r9agjij7oigjssbffc2g6i2glegb21io.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAw7sepqD1fN7acm9pM06FLM8PCT7UK5Tk"
+          "current_key": "AIzaSyBScz65YN8J9YoKdtKPl4ecCB3Vkc7iNL8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+              "client_id": "1049699819506-r9agjij7oigjssbffc2g6i2glegb21io.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -36,56 +36,27 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1052064962762:android:e6c1772b90cb2568877c33",
+        "mobilesdk_app_id": "1:1049699819506:android:490a8d64ef54403889956b",
         "android_client_info": {
-          "package_name": "quickogroup.retorzo.in"
+          "package_name": "com.sixamtech.stack_food_delivery"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+          "client_id": "1049699819506-r9agjij7oigjssbffc2g6i2glegb21io.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAw7sepqD1fN7acm9pM06FLM8PCT7UK5Tk"
+          "current_key": "AIzaSyBScz65YN8J9YoKdtKPl4ecCB3Vkc7iNL8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1052064962762:android:1f114b0041579940877c33",
-        "android_client_info": {
-          "package_name": "quickogroup.retorzo.in.deliver"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAw7sepqD1fN7acm9pM06FLM8PCT7UK5Tk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+              "client_id": "1049699819506-r9agjij7oigjssbffc2g6i2glegb21io.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

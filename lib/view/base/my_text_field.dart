@@ -1,8 +1,7 @@
-import 'package:efood_multivendor_driver/util/dimensions.dart';
-import 'package:efood_multivendor_driver/util/styles.dart';
+import 'package:efood_multivendor/util/dimensions.dart';
+import 'package:efood_multivendor/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 
 class MyTextField extends StatefulWidget {
   final String hintText;
@@ -19,6 +18,9 @@ class MyTextField extends StatefulWidget {
   final bool isEnabled;
   final TextCapitalization capitalization;
   final Color fillColor;
+  final bool autoFocus;
+  final GlobalKey<FormFieldState<String>> key;
+  final bool showBorder;
 
   MyTextField(
       {this.hintText = '',
@@ -34,7 +36,10 @@ class MyTextField extends StatefulWidget {
         this.capitalization = TextCapitalization.none,
         this.onTap,
         this.fillColor,
-        this.isPassword = false});
+        this.isPassword = false,
+        this.autoFocus = false,
+        this.showBorder = false,
+        this.key});
 
   @override
   _MyTextFieldState createState() => _MyTextFieldState();
@@ -46,10 +51,9 @@ class _MyTextFieldState extends State<MyTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 2, blurRadius: 5, offset: Offset(0, 5))],
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL), border: widget.showBorder ? Border.all(color: Theme.of(context).disabledColor) : null),
       child: TextField(
+        key: widget.key,
         maxLines: widget.maxLines,
         controller: widget.controller,
         focusNode: widget.focusNode,
@@ -59,7 +63,7 @@ class _MyTextFieldState extends State<MyTextField> {
         cursorColor: Theme.of(context).primaryColor,
         textCapitalization: widget.capitalization,
         enabled: widget.isEnabled,
-        autofocus: false,
+        autofocus: widget.autoFocus,
         //onChanged: widget.isSearch ? widget.languageProvider.searchLanguage : null,
         obscureText: widget.isPassword ? _obscureText : false,
         inputFormatters: widget.inputType == TextInputType.phone ? <TextInputFormatter>[FilteringTextInputFormatter.allow(RegExp('[0-9+]'))] : null,
