@@ -1,0 +1,91 @@
+  SystemWindowPrefMode prefMode = SystemWindowPrefMode.OVERLAY;
+  SystemWindowHeader header = SystemWindowHeader(
+    title: SystemWindowText(
+      text: "Order No.",
+      fontSize: 14,
+      textColor: Colors.black45,
+    ),
+    padding: SystemWindowPadding.setSymmetricPadding(12, 12),
+    subTitle: SystemWindowText(
+        text: '#${message.notification.titleLocKey}',
+        fontSize: 18,
+        fontWeight: FontWeight.BOLD,
+        textColor: Colors.black87),
+    decoration: SystemWindowDecoration(startColor: Colors.grey[100]),
+    // button: SystemWindowButton(
+    //     text: SystemWindowText(
+    //         text: "Personal", fontSize: 10, textColor: Colors.black45),
+    //     tag: "personal_btn"),
+    // buttonPosition: ButtonPosition.TRAILING,
+  );
+
+  SystemWindowFooter footer = SystemWindowFooter(
+      buttons: [
+        SystemWindowButton(
+          text: SystemWindowText(
+              text: "Cancel",
+              fontSize: 12,
+              textColor: Color.fromRGBO(250, 139, 97, 1)),
+          tag: "cancel_button",
+          //useful to identify button click event
+          padding:
+              SystemWindowPadding(left: 10, right: 10, bottom: 10, top: 10),
+          width: 0,
+          height: SystemWindowButton.WRAP_CONTENT,
+          decoration: SystemWindowDecoration(
+            startColor: Colors.white,
+            endColor: Colors.white,
+            borderWidth: 0,
+            borderRadius: 0.0,
+          ),
+        ),
+        SystemWindowButton(
+          text: SystemWindowText(
+              text: "Accept", fontSize: 12, textColor: Colors.white),
+          tag: "accept_button",
+          width: 0,
+          padding:
+              SystemWindowPadding(left: 10, right: 10, bottom: 10, top: 10),
+          height: SystemWindowButton.WRAP_CONTENT,
+          decoration: SystemWindowDecoration(
+            startColor: Color.fromRGBO(250, 139, 97, 1),
+            endColor: Color.fromRGBO(247, 28, 88, 1),
+            borderWidth: 0,
+            borderRadius: 30.0,
+          ),
+        )
+      ],
+      padding: SystemWindowPadding(left: 16, right: 16, bottom: 12),
+      decoration: SystemWindowDecoration(startColor: Colors.white),
+      buttonsPosition: ButtonPosition.CENTER);
+
+  SystemWindowBody body = SystemWindowBody(
+    rows: [
+      EachRow(
+        columns: [
+          EachColumn(
+            text: SystemWindowText(
+              text: message.notification.body,
+              fontSize: 28,
+              textColor: Colors.black45,
+              fontWeight: FontWeight.BOLD,
+            ),
+          ),
+        ],
+        gravity: ContentGravity.CENTER,
+      ),
+    ],
+    padding: SystemWindowPadding(left: 16, right: 16, bottom: 20, top: 15),
+  );
+
+  SystemAlertWindow.showSystemWindow(
+    height: 230,
+    header: header,
+    body: body,
+    footer: footer,
+    margin: SystemWindowMargin(left: 8, right: 8, top: 100, bottom: 0),
+    gravity: SystemWindowGravity.TOP,
+    notificationTitle: "Retorzo Captain",
+    notificationBody: "New Order",
+    prefMode: SystemWindowPrefMode.DEFAULT,
+  );

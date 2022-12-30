@@ -1,0 +1,97 @@
+{
+  "project_info": {
+    "project_number": "1052064962762",
+    "project_id": "retorzo-by-quicko-group",
+    "storage_bucket": "retorzo-by-quicko-group.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052064962762:android:20ac69367d6ed0e7877c33",
+        "android_client_info": {
+          "package_name": "quickogroup.retorzo.deliver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw7sepqD1fN7acm9pM06FLM8PCT7UK5Tk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052064962762:android:e6c1772b90cb2568877c33",
+        "android_client_info": {
+          "package_name": "quickogroup.retorzo.in"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw7sepqD1fN7acm9pM06FLM8PCT7UK5Tk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052064962762:android:1f114b0041579940877c33",
+        "android_client_info": {
+          "package_name": "quickogroup.retorzo.in.deliver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw7sepqD1fN7acm9pM06FLM8PCT7UK5Tk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052064962762-b6des8c75sjgm4e2tr0286hbe2u78eio.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
